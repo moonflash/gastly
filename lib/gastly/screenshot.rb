@@ -5,15 +5,16 @@ module Gastly
     DEFAULT_BROWSER_WIDTH = 1440
     DEFAULT_BROWSER_HEIGHT = 900
     DEFAULT_FILE_FORMAT = '.png'.freeze
+    DEFAULT_CROP = true
 
     attr_reader :image
-    attr_writer :timeout, :browser_width, :browser_height
+    attr_writer :timeout, :browser_width, :browser_height, :crop
     attr_accessor :url, :selector, :cookies, :proxy_host, :proxy_port, :phantomjs_options
 
     # @param url [String] The full url to the site
     def initialize(url, **kwargs)
       hash = Gastly::Utils::Hash.new(kwargs)
-      hash.assert_valid_keys(:timeout, :browser_width, :browser_height, :selector, :cookies, :proxy_host, :proxy_port, :phantomjs_options)
+      hash.assert_valid_keys(:timeout, :browser_width, :browser_height, :selector, :cookies, :proxy_host, :proxy_port, :phantomjs_options, :crop)
 
       @url = url
       @cookies = kwargs.delete(:cookies)
@@ -37,7 +38,7 @@ module Gastly
       Gastly::Image.new(image)
     end
 
-    %w(timeout browser_width browser_height).each do |name|
+    %w(timeout browser_width browser_height crop).each do |name|
       define_method name do                                 # def timeout
         instance_variable_get("@#{name}") ||                #   @timeout ||
           self.class.const_get("default_#{name}".upcase)    #     self.class.const_get('DEFAULT_TIMEOUT')
@@ -61,6 +62,7 @@ module Gastly
         timeout:  timeout,
         width:    browser_width,
         height:   browser_height,
+        crop:     crop,
         output:   image.path
       }
 
