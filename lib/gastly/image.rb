@@ -14,6 +14,14 @@ module Gastly
       image.resize(dimensions)
     end
 
+    # @param width [Fixnum] Image width
+    # @param height [Fixnum] Image height
+    def resize_to_fit(width:, height:)
+      dimensions = "#{width}x#{height}^"
+      crop = "#{width}x#{height}+0+0"
+      image.thumbnail(dimensions).crop(crop)
+    end
+
     # @param ext [String] Image extension
     # @return [MiniMagick::Image] Instance
     def format(ext)
